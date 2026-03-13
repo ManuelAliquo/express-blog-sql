@@ -21,17 +21,27 @@ function index(req, res) {
 
 // show (get:id)
 function show(req, res) {
-  // const postId = parseInt(req.params.id);
-  // const post = postsList.find((post) => post.id === postId);
-  // if (!post)
-  //   return res.status(404).json({
-  //     error: "Not Found",
-  //     message: "Post non trovato",
-  //   });
-  // res.status(200).json({
-  //   success: true,
-  //   result: post,
-  // });
+  const sql = "SELECT * FROM posts WHERE id = ?";
+  const id = req.params.id;
+
+  connection.query(sql, [id], (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Database query failed",
+      });
+
+    if (results.length === 0)
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+
+    res.status(200).json({
+      success: true,
+      result: results[0],
+    });
+  });
 }
 
 // store (post)
