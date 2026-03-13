@@ -3,17 +3,20 @@ const connection = require("../db/connection");
 
 // index (get)
 function index(req, res) {
-  // let filteredPosts = postsList;
-  // if (req.query.tag) filteredPosts = postsList.filter((post) => post.tags.includes(req.query.tag));
-  // if (filteredPosts.length === 0)
-  //   return res.json({
-  //     success: true,
-  //     message: "Nessun post trovato",
-  //   });
-  // res.status(200).json({
-  //   success: true,
-  //   result: filteredPosts,
-  // });
+  const sql = "SELECT * FROM posts";
+
+  connection.query(sql, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Database query failed",
+      });
+
+    res.status(200).json({
+      success: true,
+      result: results,
+    });
+  });
 }
 
 // show (get:id)
