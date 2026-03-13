@@ -3,7 +3,7 @@ const connection = require("../db/connection");
 
 // index (get)
 function index(req, res) {
-  const sql = "SELECT * FROM posts";
+  const sql = "SELECT * FROM blog_database.posts";
 
   connection.query(sql, (err, results) => {
     if (err)
@@ -21,7 +21,12 @@ function index(req, res) {
 
 // show (get:id)
 function show(req, res) {
-  const sql = "SELECT * FROM posts WHERE id = ?";
+  const sql = `
+  SELECT posts.*, tags.label AS tags FROM blog_database.posts
+  INNER JOIN post_tag ON posts.id = post_tag.post_id
+  INNER JOIN tags ON  post_tag.post_id = tags.id
+  WHERE posts.id = ?
+  `;
   const id = req.params.id;
 
   connection.query(sql, [id], (err, results) => {
